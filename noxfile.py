@@ -17,19 +17,17 @@ def build(session: nox.Session):
         session.env.setdefault("HATCH_GRADLE_DIR", f"versions/{version}")
         session.env.setdefault("HEXDOC_PROPS", f"versions/{version}/hexdoc.toml")
 
-    session.install("-e", ".", "build", "--find-links", "./libs")
+    session.install("-e", ".", "--find-links", "./libs")
 
     hexdoc_minecraft(session, "fetch")
     hexdoc_minecraft(session, "unzip")
     hexdoc_minecraft(session, "entity-models")
     hexdoc(session, "build", "--no-clean-exports")
 
-    session.run("python", "-m", "build", "--installer", "uv")
-
 
 def hexdoc(session: nox.Session, *args: str):
     if IS_CI:
-        session.run("hexdoc", "ci", *args, "--no-run-hatch-build")
+        session.run("hexdoc", "ci", *args)
     else:
         session.run("hexdoc", *args)
 
